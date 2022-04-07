@@ -24,8 +24,7 @@ int IsIndent(char* s) {
     if (s[0] == '\0') return -1;
     if (s[0] >= '0' && s[0] <= '9') return -2;
     
-    int i=-1;
-    while (s[++i]!='\0') {
+    for (int i=0; s[i]!='\0'; i++) {
         if ((s[i] >= '0' && s[i] <= '9') ||
             (s[i] >= 'A' && s[i] <= 'Z') ||
             (s[i] >= 'a' && s[i] <= 'z') ||
