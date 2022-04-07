@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void NMinmax(float* A, int& N, int& NMin, int& NMax);
 
