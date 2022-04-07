@@ -21,7 +21,6 @@ void deleteByTeens_part(double teens_part);
 
 int main()
 {
-
     struct city cities[] = {
         {
             .country = "RU",
