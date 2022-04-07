@@ -22,7 +22,7 @@ int main() {
 int IsIndent(char* s) {
 
     if (s[0] == '\0') return -1;
-    if (s[0] > '0' && s[0] < '9') return -2;
+    if (s[0] >= '0' && s[0] <= '9') return -2;
     
     int i=-1;
     while (s[++i]!='\0') {
