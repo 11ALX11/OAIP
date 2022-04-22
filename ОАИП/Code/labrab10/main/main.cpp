@@ -9,6 +9,14 @@ struct city {
     string title;
     int people;
     double teens_part; //храним числовую часть, выводя число добавляем %
+
+    enum additionalEnum {First, Second};
+    union additionalUnion {
+        int unsigned natural;
+        int intger;
+        double rational;
+    };
+    int additionalBitField : 2;
 };
 
 string getCountryWithMaxTeens(struct city *cities, int arr_length);
@@ -212,8 +220,8 @@ int findIdByField(string field, int value, struct city *cities, int arr_length, 
 
 int findIdByField(string field, double value, struct city *cities, int arr_length, int pos) {
     for (int pos; pos<arr_length; pos++) {
-            if (field == "country")
-                if (cities[pos].teens_part == value) return pos;
+            if (field == "teens_part")
+                if (abs(cities[pos].teens_part - value) < 0.001) return pos;
     }
     return -1;
 }
