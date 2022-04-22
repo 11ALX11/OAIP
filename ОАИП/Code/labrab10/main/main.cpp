@@ -39,7 +39,7 @@ int main()
 
 void menu(struct city *cities, int arr_length) {
     string input;
-    cout << "Working with menu:\n0 - exit\t1 - get country with max teens\n2 - input new city\t3 - get cities\n4 - sorting\t5 - \n";
+    cout << "Working with menu:\n0 - exit\t1 - get country with max teens\n2 - input new city\t3 - display cities\n4 - sorting\t5 - delete city\n";
     while (input != "0") {
         getline(cin, input);
 
@@ -49,6 +49,7 @@ void menu(struct city *cities, int arr_length) {
             else
                 cout << "There's no city yet.\n";
         }
+
         if (input == "2") {
             cout << "Country:\n";
             string country;
@@ -68,6 +69,7 @@ void menu(struct city *cities, int arr_length) {
 
             addCity(country, title, people, teens_part, cities, arr_length);
         }
+
         if (input == "3") {
             for (int i=0; i<arr_length; i++) {
                 displayCity(cities[i]);
@@ -76,6 +78,7 @@ void menu(struct city *cities, int arr_length) {
                 cout << "There's no city yet.\n";
             }
         }
+
         if (input == "4") {
             cout << "Type field for sorting:\n";
             string field;
@@ -87,6 +90,7 @@ void menu(struct city *cities, int arr_length) {
             sortByField(field, cities, arr_length);
             cout << "Done!\n";
         }
+
         if (input == "5") {
             if (arr_length<=0) {
                 cout << "There's no city yet.\n";
@@ -124,7 +128,6 @@ void menu(struct city *cities, int arr_length) {
                     deleteById(key, cities, arr_length);
                 }
                 else cout << "Value not found!\n";
-
             }
         }
     }
