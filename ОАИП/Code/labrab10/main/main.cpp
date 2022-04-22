@@ -80,7 +80,7 @@ void menu(struct city *cities, int arr_length) {
         }
 
         if (input == "4") {
-            cout << "Type field for sorting:\n";
+            cout << "Type field for sorting (country, title, people, teens_part):\n";
             string field;
             getline(cin, field);
             while (!(field == "country" || field == "title" || field == "people" || field == "teens_part")) {
@@ -96,7 +96,7 @@ void menu(struct city *cities, int arr_length) {
                 cout << "There's no city yet.\n";
             }
             else {
-                cout << "Type field for deleting:\n";
+                cout << "Type field for deleting (country, title, people, teens_part):\n";
                 string field;
                 getline(cin, field);
                 while (!(field == "country" || field == "title" || field == "people" || field == "teens_part")) {
