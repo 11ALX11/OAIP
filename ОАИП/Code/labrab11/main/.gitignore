@@ -1,0 +1,5 @@
+#Custom
+*.layout
+*.depend
+bin/
+obj/
