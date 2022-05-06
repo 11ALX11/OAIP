@@ -35,19 +35,28 @@ int findIdByField(string field, double value, struct city *cities, int arr_lengt
 
 void deleteById(int key, struct city *cities, int &arr_length);
 
+int loadFromFile(string fileName, struct city *cities, int &arr_length);
+int saveToFile(string fileName, struct city *cities, int &arr_length);
+
 int main()
 {
-    struct city cities[100];
+    struct city cities[1000];
     int arr_length=0;
 
-    menu(cities, arr_length);
-
-    return 0;
+    return menu(cities, arr_length);
 }
 
-void menu(struct city *cities, int arr_length) {
+int menu(struct city *cities, int arr_length) {
+    cout << "Type file name:" << endl;
+    string fileName;
+    getline(cin, fileName);
+
+    if (loadFromFile(fileName, cities, arr_length) != 0) {
+        return -1;
+    }
+
     string input;
-    cout << "Working with menu:\n0 - exit\t1 - get country with max teens\n2 - input new city\t3 - display cities\n4 - sorting\t5 - delete city\n";
+    cout << "Working with menu:\n0 - exit\t1 - get country with max teens\n2 - input new city\t3 - display cities\n4 - sorting\t5 - delete city\n6 - load from file\n";
     while (input != "0") {
         getline(cin, input);
 
@@ -138,7 +147,15 @@ void menu(struct city *cities, int arr_length) {
                 else cout << "Value not found!\n";
             }
         }
+        if (input == "6") {
+
+        }
+        if (input == "7") {
+
+        }
     }
+
+    return 0;
 }
 
 string getCountryWithMaxTeens(struct city *cities, int arr_length) {
@@ -165,12 +182,12 @@ void displayCity(struct city &city) {
 }
 
 void addCity(string &country, string &title, int people, double teens_part, struct city *cities, int &arr_length) {
-    arr_length++;
+    cities[arr_length].country = country;
+    cities[arr_length].title = title;
+    cities[arr_length].people = people;
+    cities[arr_length].teens_part = teens_part;
 
-    cities[arr_length-1].country = country;
-    cities[arr_length-1].title = title;
-    cities[arr_length-1].people = people;
-    cities[arr_length-1].teens_part = teens_part;
+    arr_length++;
 }
 
 void sortByField(string field, struct city *cities, int arr_length) {
@@ -231,4 +248,36 @@ void deleteById(int key, struct city *cities, int &arr_length) {
         cities[i] = cities[i+1];
     }
     arr_length--;
+}
+
+int loadFromFile(string fileName, struct city *cities, int &arr_length) {
+    FILE *file;
+    file = fopen(fileName.c_str(), "r");
+
+    if (file == NULL) {
+        cout << "Error while opening file!"
+        return -1;
+    }
+    else {
+        while (feof(file)) {
+            char* charCountry;
+            fscanf(file, "%s", &charCountry)
+            string str(charCountry);
+
+            char* charTitle
+            fscanf(file, "%s", &charTitle)
+            string title;
+
+            int people;
+            fscanf(file, "%d", &people)
+
+            double teens_part;
+            fscanf(file, "%e", &teens_part)
+
+            addCity(country, title, people, teens_part, cities, arr_length);
+        }
+        fclose(file);
+    }
+
+    return 0;
 }
