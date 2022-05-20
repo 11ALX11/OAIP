@@ -1,0 +1,2 @@
+C:\Users\11ALX11\Documents\OAIP\ОАИП\Code\labrab11\x64\Debug\mainVS.exe.lastcodeanalysissucceeded
+C:\Users\11ALX11\Documents\OAIP\ОАИП\Code\labrab11\mainVS\x64\Debug\NativeCodeAnalysis.read.1.tlog
