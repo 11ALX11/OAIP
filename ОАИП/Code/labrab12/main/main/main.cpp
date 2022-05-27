@@ -30,6 +30,7 @@ void displayCity(struct city& city);
 void addCity(string& country, string& title, int people, double teens_part, struct city* cities, int& arr_length, string fileName);
 
 void sortByField(string field, struct city* cities, int arr_length, string fileName);
+void quickSortByField(string field, struct city* cities, int arr_length, string fileName);
 
 int findIdByField(string field, string value, struct city* cities, int arr_length, int pos = 0);
 int findIdByField(string field, int value, struct city* cities, int arr_length, int pos = 0);
@@ -40,6 +41,9 @@ void deleteById(int key, struct city* cities, int& arr_length, string fileName);
 void loadFromFile(string fileName, struct city* cities, int& arr_length);
 void saveToFile(string fileName, struct city* cities, int& arr_length);
 void saveToFileOne(fstream& file, struct city city);
+
+void getArrayOfIdxByField(string field, int* ArrayOfIdx, int arr_length);
+void updateIdx(struct city* cities, int arr_length);
 
 int main()
 {
@@ -107,7 +111,12 @@ void menu(struct city* cities, int arr_length) {
                 cout << "Theres no such field!\n";
                 getline(cin, field);
             }
-            sortByField(field, cities, arr_length, fileName);
+            if (field == "country" || field == "title") {
+                quickSortByField(field, cities, arr_length, fileName);
+            }
+            else {
+                sortByField(field, cities, arr_length, fileName);
+            }
             cout << "Done!\n";
         }
 
@@ -193,6 +202,8 @@ void addCity(string& country, string& title, int people, double teens_part, stru
         file.open(fileName, ios::app);
         saveToFileOne(file, cities[arr_length]);
         file.close();
+
+        updateIdx(cities, arr_length);
     }
 
     arr_length++;
@@ -221,6 +232,25 @@ void sortByField(string field, struct city* cities, int arr_length, string fileN
                     swap(cities[j], cities[j + 1]);
                 }
         }
+    }
+
+
+    saveToFile(fileName, cities, arr_length);
+}
+
+void quickSortByField(string field, struct city* cities, int arr_length, string fileName) {
+    struct city tmp[1000];
+    for (int i = 0; i < arr_length; i++) {
+        tmp[i] = cities[i];
+    }
+
+    cout << "Hi" << endl;
+    
+    int ArrayOfIdx[1000];
+    getArrayOfIdxByField(field, ArrayOfIdx, arr_length);
+
+    for (int i = 0; i < arr_length; i++) {
+        cities[ArrayOfIdx[i]] = tmp[i];
     }
 
     saveToFile(fileName, cities, arr_length);
@@ -260,6 +290,7 @@ void deleteById(int key, struct city* cities, int& arr_length, string fileName) 
     arr_length--;
 
     saveToFile(fileName, cities, arr_length);
+    updateIdx(cities, arr_length);
 }
 
 void loadFromFile(string fileName, struct city* cities, int& arr_length) {
@@ -290,6 +321,7 @@ void loadFromFile(string fileName, struct city* cities, int& arr_length) {
 
             getline(file, country);
         }
+        updateIdx(cities, arr_length);
         file.close();
     }
 }
@@ -313,4 +345,74 @@ void saveToFileOne(fstream& file, struct city city) {
     file << city.title << endl;
     file << city.people << endl;
     file << city.teens_part << endl;
+}
+
+void updateIdx(struct city* cities, int arr_length) {
+    fstream country, title;
+    country.open("idx_country.txt", ios::out);
+    title.open("idx_title.txt", ios::out);
+
+    if (!title.is_open() && !country.is_open()) {
+        cerr << "Error while creating file!\n";
+        throw exception();
+    }
+
+    int idx[1000];
+    for (int i = 0; i < arr_length; i++) {
+        idx[i] = i;
+    }
+    for (int i = 0; i < arr_length; i++) {
+        for (int j = 0; j < arr_length - 1; j++) {
+            if (cities[j].country > cities[j + 1].country) {
+                swap(cities[j], cities[j + 1]);
+                swap(idx[j], idx[j + 1]);
+            }
+        }
+    }
+    for (int i = 0; i < arr_length; i++) {
+        country << idx[i] << endl;
+    }
+    
+    for (int i = 0; i < arr_length; i++) {
+        idx[i] = i;
+    }
+    for (int i = 0; i < arr_length; i++) {
+        for (int j = 0; j < arr_length - 1; j++) {
+            if (cities[j].title > cities[j + 1].title) {
+                swap(cities[j], cities[j + 1]);
+                swap(idx[j], idx[j + 1]);
+            }
+        }
+    }
+    for (int i = 0; i < arr_length; i++) {
+        title << idx[i] << endl;
+    }
+
+    country.close();
+    title.close();
+}
+
+void getArrayOfIdxByField(string field, int* ArrayOfIdx, int arr_length) {
+    fstream file;
+    if (field == "country") {
+        file.open("idx_country.txt", ios::in);
+    }
+    if (field == "title") {
+        file.open("idx_title.txt", ios::in);
+    }
+
+    if (field != "country" && field != "title") {
+        cerr << "Field " << field << " doesnt have indexes!\n";
+        throw exception();
+    }
+    if (!file.is_open()) {
+        cerr << "Error while creating file!\n";
+        throw exception();
+    }
+
+    for (int i = 0; i < arr_length; i++) {
+        file >> ArrayOfIdx[i];
+    }
+
+    file.close();
 }
