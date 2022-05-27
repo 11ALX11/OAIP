@@ -1,29 +1,13 @@
-﻿#include <iostream>
+#include <iostream>
 #include <map>
-#include <math.h>
 #include <fstream>
 #include <string>
+#include <math.h>
+#include "menu_file.h"
 
 using namespace std;
 
-struct city {
-    string country;
-    string title;
-    int people;
-    double teens_part; //храним числовую часть, выводя число добавляем %
-
-    enum additionalEnum { First, Second };
-    union additionalUnion {
-        int unsigned natural;
-        int intger;
-        double rational;
-    };
-    int additionalBitField : 2;
-};
-
 string getCountryWithMaxTeens(struct city* cities, int arr_length);
-
-void menu(struct city* cities, int arr_length);
 
 void displayCity(struct city& city);
 
@@ -39,21 +23,6 @@ int findIdByField(string field, double value, struct city* cities, int arr_lengt
 void deleteById(int key, struct city* cities, int& arr_length, string fileName);
 
 void loadFromFile(string fileName, struct city* cities, int& arr_length);
-void saveToFile(string fileName, struct city* cities, int& arr_length);
-void saveToFileOne(fstream& file, struct city city);
-
-void getArrayOfIdxByField(string field, int* ArrayOfIdx, int arr_length);
-void updateIdx(struct city* cities, int arr_length);
-
-int main()
-{
-    struct city cities[1000];
-    int arr_length = 0;
-
-    menu(cities, arr_length);
-
-    return 0;
-}
 
 void menu(struct city* cities, int arr_length) {
     cout << "Type file name:" << endl;
@@ -168,6 +137,7 @@ void menu(struct city* cities, int arr_length) {
     }
 }
 
+
 string getCountryWithMaxTeens(struct city* cities, int arr_length) {
     map<string, int> countries;
 
@@ -234,7 +204,6 @@ void sortByField(string field, struct city* cities, int arr_length, string fileN
         }
     }
 
-
     saveToFile(fileName, cities, arr_length);
 }
 
@@ -248,7 +217,7 @@ void quickSortByField(string field, struct city* cities, int arr_length, string 
     getArrayOfIdxByField(field, ArrayOfIdx, arr_length);
 
     for (int i = 0; i < arr_length; i++) {
-        cities[ArrayOfIdx[i]] = tmp[i];
+        cities[i] = tmp[ArrayOfIdx[i]];
     }
 
     saveToFile(fileName, cities, arr_length);
@@ -322,96 +291,4 @@ void loadFromFile(string fileName, struct city* cities, int& arr_length) {
         updateIdx(cities, arr_length);
         file.close();
     }
-}
-
-void saveToFile(string fileName, struct city* cities, int& arr_length) {
-    fstream file;
-    file.open(fileName, ios::out);
-
-    if (!file.is_open()) {
-        cerr << "Error while creating file!\n";
-        throw exception();
-    }
-
-    for (int i = 0; i < arr_length; i++) {
-        saveToFileOne(file, cities[i]);
-    }
-    file.close();
-}
-
-void saveToFileOne(fstream& file, struct city city) {
-    file << city.country << endl;
-    file << city.title << endl;
-    file << city.people << endl;
-    file << city.teens_part << endl;
-}
-
-void updateIdx(struct city* cities, int arr_length) {
-    fstream country, title;
-    country.open("idx_country.txt", ios::out);
-    title.open("idx_title.txt", ios::out);
-
-    if (!title.is_open() && !country.is_open()) {
-        cerr << "Error while creating file!\n";
-        throw exception();
-    }
-
-    int idx[1000];
-    for (int i = 0; i < arr_length; i++) {
-        idx[i] = i;
-    }
-    for (int i = 0; i < arr_length; i++) {
-        for (int j = 0; j < arr_length - 1; j++) {
-            if (cities[j].country > cities[j + 1].country) {
-                swap(cities[j], cities[j + 1]);
-                swap(idx[j], idx[j + 1]);
-            }
-        }
-    }
-    for (int i = 0; i < arr_length; i++) {
-        country << idx[i] << endl;
-    }
-    
-    for (int i = 0; i < arr_length; i++) {
-        idx[i] = i;
-    }
-    for (int i = 0; i < arr_length; i++) {
-        for (int j = 0; j < arr_length - 1; j++) {
-            if (cities[j].title > cities[j + 1].title) {
-                swap(cities[j], cities[j + 1]);
-                swap(idx[j], idx[j + 1]);
-            }
-        }
-    }
-    for (int i = 0; i < arr_length; i++) {
-        title << idx[i] << endl;
-    }
-
-    country.close();
-    title.close();
-}
-
-void getArrayOfIdxByField(string field, int* ArrayOfIdx, int arr_length) {
-    fstream file;
-    if (field == "country") {
-        file.open("idx_country.txt", ios::in);
-    }
-    if (field == "title") {
-        file.open("idx_title.txt", ios::in);
-    }
-
-    if (field != "country" && field != "title") {
-        cerr << "Field " << field << " doesnt have indexes!\n";
-        throw exception();
-    }
-    if (!file.is_open()) {
-        cerr << "Error while creating file!\n";
-        throw exception();
-    }
-
-    for (int i = 0; i < arr_length; i++) {
-        file >> ArrayOfIdx[i];
-    }
-
-    file.close();
 }
