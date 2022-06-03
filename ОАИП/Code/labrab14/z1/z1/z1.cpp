@@ -1,20 +1,122 @@
-﻿// z1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
 
-#include <iostream>
+using namespace std;
+
+struct list {
+    int value;
+    struct list* next;
+};
+
+struct tree
+{
+    int value;
+    struct tree* left;
+    struct tree* right;
+    struct tree* parent;
+};
+
+void pushToList(struct list** head, int data);
+void printList(const struct list* head);
+void freeList(struct list* head);
+
+struct tree* createTree(struct tree* root, int value);
+struct tree* addToTree(struct tree* root, int value);
+int countNodes(struct tree* root);
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    cout << "Enter amount of elements:\n";
+    int n;
+    cin >> n;
+    
+    struct list* list = NULL;
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++) {
+        int value;
+        cin >> value;
+        pushToList(&list, value);
+    }
+
+    printList(list);
+    freeList(list);
+
+    cout << "Enter amount of elements:\n";
+    cin >> n;
+
+    struct tree* tree = NULL;
+    tree = createTree(tree, 0);
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++) {
+        int value;
+        cin >> value;
+        addToTree(tree, value);
+    }
+
+    cout << "Positive - " << countNodes(tree->right) << endl;
+    cout << "Negative - " << countNodes(tree->left) << endl;
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+void pushToList(struct list** head, int data) {
+    struct list* tmp = (struct list*)malloc(sizeof(struct list));
+    tmp->value = data;
+    tmp->next = (*head);
+    (*head) = tmp;
+}
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+void printList(const struct list* head) {
+    while (head) {
+        cout << head->value << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+void freeList(struct list* head) {
+    struct list* head_old;
+    while (head) {
+        head_old = head;
+        head = head->next;
+        free(head_old);
+    }
+};
+
+struct tree* createTree(struct tree* root, int value) {
+    struct tree* tmp = (struct tree*)malloc(sizeof(struct tree));
+    tmp->value = value;
+    tmp->parent = NULL;
+    tmp->left = tmp->right = NULL;
+    root = tmp;
+    return root;
+}
+
+struct tree* addToTree(struct tree* root, int value) {
+    struct tree* root2 = root, * root3 = NULL;
+    struct tree* tmp = (struct tree*)malloc(sizeof(struct tree));
+    tmp->value = value;
+    while (root2 != NULL)
+    {
+        root3 = root2;
+        if (value < root2->value)
+            root2 = root2->left;
+        else
+            root2 = root2->right;
+    }
+    tmp->parent = root3;
+    tmp->left = NULL;
+    tmp->right = NULL;
+    if (value < root3->value) root3->left = tmp;
+    else root3->right = tmp;
+    return root;
+}
+
+int countNodes(struct tree* root) {
+    int tmp = 0;
+    if (root == NULL)
+        return tmp;
+    if (root->value) tmp++;
+    
+    tmp += countNodes(root->left);
+    tmp += countNodes(root->right);
+    
+    return tmp;
+}
